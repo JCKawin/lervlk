@@ -67,6 +67,20 @@ void Pipeline::createGraphicsPipeline(const std::string &vertFilePath,
   pipelineInfo.stageCount = 2;
   pipelineInfo.pStages = shaderStages;
   pipelineInfo.pVertexInputState = &vertexInputInfo;
+  pipelineInfo.pInputAssemblyState = &configInfo.inputAssemblyInfo;
+  pipelineInfo.pViewportState = &configInfo.viewportInfo;
+  pipelineInfo.pRasterizationState = &configInfo.rasterizationInfo;
+  pipelineInfo.pColorBlendState = &configInfo.colorBlendInfo;
+  pipelineInfo.pDepthStencilState = &configInfo.depthStencilInfo;
+  pipelineInfo.pDynamicState = nullptr;
+
+  pipelineInfo.layout = configInfo.pipelineLayout;
+  pipelineInfo.renderPass = configInfo.renderPass;
+  pipelineInfo.subpass = configInfo.subpass;
+
+  pipelineInfo.basePipelineIndex = -1;
+  pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+
 
   // std::cout << "Size of Fragment Shader " << fragShader.size() << "\n";
   // std::cout << "Size of Vertex Shader " << vertShader.size() << "\n";
