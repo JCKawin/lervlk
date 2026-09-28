@@ -2,13 +2,22 @@
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
+#include <filesystem>
+namespace fs = std::filesystem;
 
 namespace lervlk {
 Pipeline::Pipeline(const std::string &vertFilePath,
                    const std::string &fragFilePath, Device &device,
                    const PipelineConfigInfo &configInfo)
     : pipelineDevice{device} {
-  createGraphicsPipeline(vertFilePath, fragFilePath, configInfo);
+  std::string parent = fs::current_path().string() + "/../";
+  createGraphicsPipeline(parent + vertFilePath, parent +  fragFilePath, configInfo);
+}
+
+  Pipeline::~Pipeline() {
+  vkDestroyShaderModule(pipelineDevice.device(), vertShaderModule, nullptr);
+  vkDestroyShaderModule(pipelineDevice.device(), fragShaderModule, nullptr);
+  vkDestroyPipeline(pipelineDevice.device(), graphicsPipeline, nullptr);
 }
 
 std::vector<char> Pipeline::readFile(const std::string &filePath) {
@@ -72,6 +81,7 @@ void Pipeline::createGraphicsPipeline(const std::string &vertFilePath,
   pipelineInfo.pRasterizationState = &configInfo.rasterizationInfo;
   pipelineInfo.pColorBlendState = &configInfo.colorBlendInfo;
   pipelineInfo.pDepthStencilState = &configInfo.depthStencilInfo;
+  pipelineInfo.pMultisampleState = &configInfo.multisampleInfo;
   pipelineInfo.pDynamicState = nullptr;
 
   pipelineInfo.layout = configInfo.pipelineLayout;
@@ -81,6 +91,9 @@ void Pipeline::createGraphicsPipeline(const std::string &vertFilePath,
   pipelineInfo.basePipelineIndex = -1;
   pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
+  if (vkCreateGraphicsPipelines(pipelineDevice.device(),VK_NULL_HANDLE , 1 ,  &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) {
+    throw std::runtime_error("Failed to create graphics pipeline");
+  }
 
   // std::cout << "Size of Fragment Shader " << fragShader.size() << "\n";
   // std::cout << "Size of Vertex Shader " << vertShader.size() << "\n";

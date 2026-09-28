@@ -87,8 +87,7 @@ void Device::createInstance() {
 
   VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
   if (enableValidationLayers) {
-    createInfo.enabledLayerCount =
-        static_cast<uint32_t>(validationLayers.size());
+    createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
     createInfo.ppEnabledLayerNames = validationLayers.data();
 
     populateDebugMessengerCreateInfo(debugCreateInfo);
@@ -165,8 +164,8 @@ void Device::createLogicalDevice() {
   // might not really be necessary anymore because device specific validation
   // layers have been deprecated
   if (enableValidationLayers) {
-    createInfo.enabledLayerCount =
-        static_cast<uint32_t>(validationLayers.size());
+    createInfo.enabledLayerCount = 0 ;
+        // static_cast<uint32_t>(validationLayers.size());
     createInfo.ppEnabledLayerNames = validationLayers.data();
   } else {
     createInfo.enabledLayerCount = 0;

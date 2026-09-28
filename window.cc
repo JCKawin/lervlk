@@ -18,6 +18,10 @@ void Window::InitWindow() {
 
   window =
       glfwCreateWindow(width, height, windowName.c_str(), nullptr, nullptr);
+
+  if (!window) {
+    throw std::runtime_error("Failed to create GLFW window");
+  }
 }
 
 void Window::createWindowSurface(VkInstance instance, VkSurfaceKHR *surface) {
